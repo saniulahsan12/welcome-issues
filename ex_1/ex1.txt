@@ -1,0 +1,305 @@
+step 1:
+-------
+Use case: The asset should be sent to LegALpprove when starting the third step of a task using the
+asset creation workflow. For this step we need to use the webhook and call the Legal Api.
+
+Webhook:
+external_sub_step_modified
+
+Payload:
+
+    "event_name": "external_sub_step_modified",
+    "data": {
+        "task": {
+            "id": "5f6a0312a5963d0591015e3e",
+            "links": {
+                "self": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e",
+                "assets": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e/assets"
+            }
+        },
+        "step": {
+            "id": "5f68911d83eeb10591933b49",
+            "links": {
+                "task": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e"
+            }
+        },
+        "sub_step": {
+            "id": "5f68911d83eeb10591933b4a",
+            "links": {
+                "self": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e/steps/5f68911d83eeb10591933b49/sub-steps/5f68911d83eeb10591933b4a",
+                "task": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e",
+                "external_work": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e/steps/5f68911d83eeb10591933b49/sub-steps/5f68911d83eeb10591933b4a/external-work"
+            }
+        },
+        "external_work": {
+            "external_system": "Jira",
+            "links": {
+                "self": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e/steps/5f68911d83eeb10591933b49/sub-steps/5f68911d83eeb10591933b4a/external-work",
+                "task": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e",
+                "sub_step": "https://api.welcomesoftware.com/v3/tasks/5f6a0312a5963d0591015e3e/steps/5f68911d83eeb10591933b49/sub-steps/5f68911d83eeb10591933b4a"
+            }
+        }
+    }
+}
+
+
+
+-----------
+
+
+
+step 2:
+-------
+Use case: The task Asset Label data should be retrieved.
+
+GET /assets
+
+Query parameters: [Array of objects]
+label={"group": "ee63e3ee43925bb5cc8cd17b817d93ee", "values": ["6706efc7828cd6aaedbc0434139cd3e1", "1f32651216cf2aefcaa08be1ea7dedf1"]}&label={"group": "126123b543912bb5cc12d17b817d9312", "values": ["aa63e3ee43925bb5cc8cd17b817d93aa", "df697bd824a944bf7d4fb6e350d9c5bd"]}
+
+Response:
+{
+  "data": [
+    {
+      "id": "5d7f910551b00a722e0418830cee6631",
+      "title": "sample_image.png",
+      "type": "image",
+      "mime_type": "image/png",
+      "created_at": "2019-10-06T13:15:30Z",
+      "modified_at": "2019-10-07T13:15:30Z",
+      "folder_id": "6bb8db20a5b611ebae319b7c541b1a5a",
+      "file_location": "/all assets/important assets",
+      "content": {
+        "type": "url",
+        "value": "http://images.welcomesoftware.com/Zz0xODQ3NDU3Y2Y2YmYzOTlmNjkyOTgyZDY3Y2I3YWM2OA==S"
+      },
+      "labels": [
+        {
+          "group": {
+            "id": "2467e583a60e23fda2b89db81a453cd2",
+            "name": "Content Format"
+          },
+          "values": [
+            {
+              "id": "71c378f3fee3d822759d1bdc2aab628c",
+              "name": "Photos"
+            }
+          ]
+        }
+      ],
+      "links": {
+        "self": "https://api.welcomesoftware.com/v3/images/5d7f910551bw0a722e0418830cee6631"
+      },
+      "owner_organization_id": "5108c3a9becac35915111191"
+    }
+  ],
+  "pagination": {
+    "next": "https://api.welcomesoftware.com/v3/assets?offset=10&page_size=10",
+    "previous": null
+  }
+}
+
+
+-----------
+
+
+
+step 3:
+-------
+Use case: The task Custom Fields data should be retrieved.
+
+GET tasks/{id}/custom-fields
+
+Input:
+
+id 5f857f30e1c4a2038d6179e9
+
+Output:
+{
+  "data": [
+    {
+      "id": "9nu8ue9wf8u9nusd9q",
+      "name": "My Dropdown",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1nu8ue9wf8u9nusd9u",
+          "name": "Some text"
+        }
+      ],
+      "links": {
+        "self": "https://api.welcomesoftware.com/v3/tasks/5f857f30e1c4a2038d6179e9/custom-fields/9nu8ue9wf8u9nusd9q",
+        "choices": "https://api.welcomesoftware.com/v3/tasks/5f857f30e1c4a2038d6179e9/custom-fields/9nu8ue9wf8u9nusd9q/choices"
+      }
+    }
+  ],
+  "pagination": {
+    "next": "https://api.welcomesoftware.com/v3/tasks/5f857f30e1c4a2038d6179e9/custom-fields?offset=10&page_size=10",
+    "previous": null
+  }
+}
+
+
+
+-----------
+
+
+
+step 4:
+-------
+Use case: Update the External Work Information of the third step (External Sub Step) in Welcome’s
+workflow.
+
+PATCH /tasks/{task_id}/steps/{step_id}/sub-steps/{sub_step_id}/external-work
+
+Input:
+task_id 7d7f910551b00a722e0418830cee6612
+step_id 897f910551b00a722e0418830cee6612
+sub_step_id 700f910551b00a722e0418830cee6612
+
+Payload:
+{
+  "identifier": "MY-PROJ-123",
+  "title": "A very important ticket",
+  "status": "In Progress",
+  "url": "https://example.com/some-project/MY-PROJ-123"
+}
+
+Output:
+{
+  "identifier": "MY-PROJ-123",
+  "title": "A very important ticket",
+  "status": "In Progress",
+  "url": "https://example.com/some-project/MY-PROJ-123",
+  "external_system": "jira",
+  "links": {
+    "self": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee6631/steps/32982hf94j98cnr48034nv035/sub-steps/9n390809r384nv503459075034nv5/external-work"
+  }
+}
+
+
+-----------
+
+
+step 5:
+-------
+Use case: Update the third step (External Sub Step) due date in Welcome based on the LegALpprove
+due date.
+
+I think it is not possible to do this operation as there is no API endpoint is found for this task.
+
+-----------
+
+
+step 6:
+-------
+Use case: Create a Comment on the third step (External Sub Step) in Welcome’s workflow to notify the
+user that the asset is being reviewed.
+
+POST /tasks/{task_id}/steps/{step_id}/sub-steps/{sub_step_id}/comments
+
+Input:
+asset_id 7d7f910551b00a722e0418830cee6612
+step_id 897f910551b00a722e0418830cee6612
+sub_step_id 700f910551b00a722e0418830cee6612
+
+Payload:
+{
+  "value": "Comment mentioning @[Organization User](https://api.welcomesoftware.com/v3/users/5fe38aeb574b52a62a089238)",
+  "attachments": [
+    {
+      "key": "ce8995aea58b11ea8cd90242ac120005",
+      "name": "sample_image.png"
+    }
+  ]
+}
+
+Output:
+{
+  "id": "5fe38c39574b52a62a089239",
+  "value": "Well done!",
+  "is_resolved": false,
+  "created_at": "2020-10-06T13:15:30Z",
+  "modified_at": "2020-10-06T14:15:30Z",
+  "attachments": [
+    {
+      "id": "a113667245d111eb8945000c",
+      "name": "sample.png",
+      "url": "https://files.welcomesoftware.com/download/96c314a645d111eb8945000c291b51d4?token="
+    }
+  ],
+  "links": {
+    "self": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534/steps/6d7f910551b00a722e0418830cee5564/sub-steps/9c7f910551b00a722e0418830cee2564",
+    "comment_by": "https://api.welcomesoftware.com/v3/users/5fe38eea574b52a62a08923a",
+    "task": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534",
+    "sub_step": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534/steps/6d7f910551b00a722e0418830cee5564/sub-steps/9c7f910551b00a722e0418830cee2564"
+  }
+}
+
+-----------
+
+
+
+step 7:
+-------
+Use case: Upload a new version of the asset to the task in Welcome.
+
+POST /assets/{asset_id}/versions
+
+Input:
+asset_id 7d7f910551b00a722e0418830cee6612
+
+Payload:
+{
+  "key": "string",
+  "title": "sample_image.png"
+}
+
+Output:
+{
+  "version_number": 2,
+  "asset_id": "5d7f910551b00a722e0418830cee6631",
+  "title": "sample_image.png",
+  "type": "image",
+  "mime_type": "image/png",
+  "created_at": "2019-10-06T13:15:30Z",
+  "content": {
+    "type": "url",
+    "value": "http://images.welcomesoftware.com/Zz0xODQ3NDU3Y2Y2YmYzOTlmNjkyOTgyZDY3Y2I3YWM2OA==S"
+  },
+  "links": {
+    "asset": "https://api.welcomesoftware.com/v3/images/5d7f910551b00a722e0418830cee6631"
+  }
+}
+
+------------
+
+
+
+step 8:
+-------
+Use case: Close the third step (External Sub Step) in Welcome’s workflow.
+
+PATCH /tasks/{task_id}/steps/{step_id}/sub-steps/{sub_step_id}
+
+Input:
+{
+    "is_completed": true
+}
+
+Output:
+{
+  "id": "9c7f910551b00a722e0418830cee2564",
+  "title": "Sample step",
+  "assignee_id": "5fdf31d57f0d0e362e2b5908",
+  "is_completed": false,
+  "is_skipped": false,
+  "is_external": true,
+  "links": {
+    "self": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534/steps/6d7f910551b00a722e0418830cee5564/sub-steps/9c7f910551b00a722e0418830cee2564",
+    "task": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534",
+    "external_work": "https://api.welcomesoftware.com/v3/tasks/5d7f910551b00a722e0418830cee5534/steps/6d7f910551b00a722e0418830cee5564/sub-steps/9c7f910551b00a722e0418830cee2564/external-work",
+    "assignee": "https://api.welcomesoftware.com/v3/users/5fdf31d57f0d0e362e2b5908"
+  }
+}
+-----------
